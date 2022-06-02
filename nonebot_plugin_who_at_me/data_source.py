@@ -40,7 +40,7 @@ def db2image(data: List[MainTable]) -> Image.Image:
 
 def draw_line(data: List) -> Image.Image:
     image = Image.new("RGBA", (sum(boxes), 50), (0, 0, 0, 0))
-    font = str(Path().absolute() / "STZHONGS.TTF")
+    font = str(Path(__file__).parent.absolute() / "STZHONGS.TTF")
     truefont = ImageFont.truetype(font=font, size=50)
     for coloum, text in enumerate(data):
         text = text if truefont.getsize(str(text))[0] <= boxes[coloum] else text[:5]
