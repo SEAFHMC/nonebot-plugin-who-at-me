@@ -1,20 +1,15 @@
 from typing import List
 from io import BytesIO
-from nonebot.log import logger
-from nonebot import on_command, on_message, get_driver
+from nonebot import on_command, on_message
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, MessageSegment, MessageEvent
 from nonebot.params import EventMessage
 from nonebot.exception import FinishedException
+from nonebot.permission import SUPERUSER
 from time import strftime, localtime
 from .data_source import extract_member_at, db2image
 from .database import MainTable
-from .config import Config
 
-plugin_config = Config.parse_obj(get_driver().config.dict())
-at_reminder = set(plugin_config.at_reminder)
-if not at_reminder:
-    logger.warning("未配置at_reminder")
-    at_reminder = {}
+
 
 monitor = on_message(block=False)
 
@@ -36,14 +31,12 @@ def create_record(event: GroupMessageEvent, target_id):
 async def _(event: GroupMessageEvent, message=EventMessage()):
     if event.reply:
         target_id = event.reply.sender.user_id
-        if str(target_id) in at_reminder:
-            create_record(event=event, target_id=target_id)
-            raise FinishedException
+        create_record(event=event, target_id=target_id)
+        raise FinishedException
     if menmber_at := extract_member_at(message=message):
-        if target_id_list := menmber_at & at_reminder:
-            for target_id in target_id_list:
-                create_record(event=event, target_id=target_id)
-            raise FinishedException
+        for target_id in menmber_at:
+            create_record(event=event, target_id=target_id)
+        raise FinishedException
 
 
 who_at_me = on_command("谁艾特我")
@@ -67,3 +60,14 @@ clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear"})
 async def _(event: GroupMessageEvent):
     MainTable.delete().where(MainTable.target_id == event.user_id).execute()
     await clear_db.finish("已清理数据库")
+
+
+clear_db_all = on_command(
+    "清除全部数据库", aliases={"clear_all", "db_clear --purge"}, permission=SUPERUSER
+)
+
+
+@clear_db_all.handle()
+async def _():
+    MainTable.delete()
+    await clear_db.finish("已清理全部数据库")
