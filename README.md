@@ -26,13 +26,15 @@ nb plugin install nonebot-plugin-who-at-me
 # 配置
 记得配置SUPERUSER
 # 使用
+<div align="center">
+
 （这里默认COMMAND_START为"/"）
 | 命令              | 描述              |
 | ------------------ | --------------- |
-|/谁艾特我L | 查看到底是谁艾特了你       |
+|/谁艾特我 | 查看到底是谁艾特了你       |
 |/clear_db     | 清理当前用户的消息记录 |
 |/clear_all     | 清理全部消息记录     |
+
 你将获得一张劣质的表格】
-<div align="center">
   <p><img src=https://s2.loli.net/2022/06/02/hS76NxRYKDIALrn.png width=500 heighth=500></p>
 </div>
