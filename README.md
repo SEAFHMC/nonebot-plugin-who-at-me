@@ -24,17 +24,14 @@ pip install nonebot-plugin-who-at-me
 nb plugin install nonebot-plugin-who-at-me
 ```
 # 配置
-你需要再.env中填写配置
-</br>例子：</br>
-```ini
-at_reminder = ["123456789", "11451461658"]
-```
+记得配置SUPERUSER
 # 使用
 （这里默认COMMAND_START为"/"）
-```python
-/谁艾特我    #查看到底是谁艾特了你
-/clear_db    #清理记录
-```
+| 命令              | 描述              |
+| ------------------ | --------------- |
+|/谁艾特我L | 查看到底是谁艾特了你       |
+|/clear_db     | 清理当前用户的消息记录 |
+|/clear_all     | 清理全部消息记录     |
 你将获得一张劣质的表格】
 <div align="center">
   <p><img src=https://s2.loli.net/2022/06/02/hS76NxRYKDIALrn.png width=500 heighth=500></p>
