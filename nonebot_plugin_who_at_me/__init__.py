@@ -69,5 +69,5 @@ clear_db_all = on_command(
 
 @clear_db_all.handle()
 async def _():
-    MainTable.delete()
+    MainTable.delete().where(MainTable.target_id).execute()
     await clear_db.finish("已清理全部数据库")
