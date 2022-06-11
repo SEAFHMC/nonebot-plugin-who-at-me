@@ -8,10 +8,10 @@ from nonebot.permission import SUPERUSER
 from time import strftime, localtime
 from .data_source import extract_member_at, db2image
 from .database import MainTable
+from .rule import message_at_rule
 
 
-
-monitor = on_message(block=False)
+monitor = on_message(block=False, rule=message_at_rule)
 
 
 def create_record(event: GroupMessageEvent, target_id):
