@@ -33,8 +33,8 @@ async def _(event: GroupMessageEvent, message=EventMessage()):
         target_id = event.reply.sender.user_id
         create_record(event=event, target_id=target_id)
         raise FinishedException
-    if menmber_at := extract_member_at(message=message):
-        for target_id in menmber_at:
+    if member_at := extract_member_at(message=message):
+        for target_id in member_at:
             create_record(event=event, target_id=target_id)
         raise FinishedException
 
