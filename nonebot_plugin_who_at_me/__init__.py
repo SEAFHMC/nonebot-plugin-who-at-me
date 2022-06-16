@@ -57,7 +57,7 @@ clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear"})
 
 
 @clear_db.handle()
-async def _(event: GroupMessageEvent):
+async def _(event: MessageEvent):
     MainTable.delete().where(MainTable.target_id == event.user_id).execute()
     await clear_db.finish("已清理数据库")
 
