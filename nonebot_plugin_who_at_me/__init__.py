@@ -53,7 +53,9 @@ async def _(bot: Bot, event: GroupMessageEvent, message=EventMessage()):
         raise FinishedException
 
 
-who_at_me = on_command("谁艾特我")
+who_at_me = on_command("谁艾特我", aliases={
+    "谁@我", "有人@我", "@我干啥", "谁圈我", "有人圈我", "圈我干啥", "谁艾特我", "有人艾特我", "艾特我干啥"
+})
 
 
 @who_at_me.handle()
@@ -96,7 +98,7 @@ async def _(bot: Bot, event: MessageEvent):
             else:
                 raise e
 
-clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear"})
+clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear", "已阅"})
 
 
 @clear_db.handle()
