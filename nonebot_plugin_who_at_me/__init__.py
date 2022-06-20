@@ -61,6 +61,8 @@ async def _(bot: Bot, event: MessageEvent):
     res_list: List[MainTable] = MainTable.select().where(
         MainTable.target_id == event.user_id
     )
+    if not res_list:
+        await who_at_me.finish(MessageSegment.reply(event.message_id) + "目前还没有人@您噢！")
     message_list: List[MessageSegment] = list()
     for res in res_list:
         message_list.append(node_custom(
