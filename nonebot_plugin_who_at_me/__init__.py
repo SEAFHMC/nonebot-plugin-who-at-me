@@ -53,7 +53,9 @@ async def _(bot: Bot, event: GroupMessageEvent, message=EventMessage()):
         raise FinishedException
 
 
-who_at_me = on_command("谁艾特我")
+who_at_me = on_command("谁艾特我", aliases={
+    "谁@我", "有人@我", "@我干啥", "谁圈我", "有人圈我", "圈我干啥", "谁艾特我", "有人艾特我", "艾特我干啥"
+})
 
 
 @who_at_me.handle()
@@ -62,7 +64,11 @@ async def _(bot: Bot, event: MessageEvent):
         MainTable.target_id == event.user_id
     )
     message_list: List[MessageSegment] = list()
+    is_group = False
     for res in res_list:
+        if is_group := isinstance(event, GroupMessageEvent):
+            if res.group_id != event.group_id:
+                continue
         message_list.append(node_custom(
             content=res.message,
             user_id=res.operator_id,
@@ -70,7 +76,9 @@ async def _(bot: Bot, event: MessageEvent):
             time=res.time
         ))
         message_list.append(res.message)
-    if isinstance(event, GroupMessageEvent):
+    if not message_list:
+        await who_at_me.finish(MessageSegment.reply(event.message_id) + "目前还没有人@您噢！")
+    if is_group:
         event: GroupMessageEvent
         await bot.call_api(
             "send_group_forward_msg",
@@ -90,13 +98,19 @@ async def _(bot: Bot, event: MessageEvent):
             else:
                 raise e
 
-clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear"})
+clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear", "已阅"})
 
 
 @clear_db.handle()
 async def _(event: MessageEvent):
-    MainTable.delete().where(MainTable.target_id == event.user_id).execute()
-    await clear_db.finish("已清理数据库")
+    if isinstance(event, GroupMessageEvent):
+        MainTable.delete().where(
+            MainTable.target_id == event.user_id and MainTable.group_id == event.group_id
+        ).execute()
+        await clear_db.finish("已经清除您在本群的被艾特记录！")
+    else:
+        MainTable.delete().where(MainTable.target_id == event.user_id).execute()
+        await clear_db.finish("已经清除您所有的被艾特记录！")
 
 
 clear_db_all = on_command(
