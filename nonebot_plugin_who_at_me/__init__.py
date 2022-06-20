@@ -61,10 +61,12 @@ async def _(bot: Bot, event: MessageEvent):
     res_list: List[MainTable] = MainTable.select().where(
         MainTable.target_id == event.user_id
     )
-    if not res_list:
-        await who_at_me.finish(MessageSegment.reply(event.message_id) + "目前还没有人@您噢！")
     message_list: List[MessageSegment] = list()
+    is_group = False
     for res in res_list:
+        if is_group := isinstance(event, GroupMessageEvent):
+            if res.group_id != event.group_id:
+                continue
         message_list.append(node_custom(
             content=res.message,
             user_id=res.operator_id,
@@ -72,7 +74,9 @@ async def _(bot: Bot, event: MessageEvent):
             time=res.time
         ))
         message_list.append(res.message)
-    if isinstance(event, GroupMessageEvent):
+    if not message_list:
+        await who_at_me.finish(MessageSegment.reply(event.message_id) + "目前还没有人@您噢！")
+    if is_group:
         event: GroupMessageEvent
         await bot.call_api(
             "send_group_forward_msg",
