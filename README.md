@@ -36,6 +36,5 @@ nb plugin install nonebot-plugin-who-at-me
 |/clear_db     | 清理当前用户的消息记录 |
 |/clear_all     | 清理全部消息记录     |
 
-你将获得一张劣质的表格】
-  <p><img src=https://s2.loli.net/2022/06/02/hS76NxRYKDIALrn.png width=500 heighth=500></p>
-</div>
+<del>你将获得一张劣质的表格】</del></br>
+没有图片！只有合并转发辣！
