@@ -2,7 +2,7 @@ import time
 from typing import List
 
 import nonebot
-from nonebot import on_command, on_message
+from nonebot import on_command, on_message, on_regex
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, MessageSegment, MessageEvent, Message, Bot
 from nonebot.exception import FinishedException, ActionFailed
 from nonebot.params import EventMessage
@@ -53,9 +53,7 @@ async def _(bot: Bot, event: GroupMessageEvent, message=EventMessage()):
         raise FinishedException
 
 
-who_at_me = on_command("谁艾特我", aliases={
-    "谁@我", "有人@我", "@我干啥", "谁圈我", "有人圈我", "圈我干啥", "谁艾特我", "有人艾特我", "艾特我干啥"
-})
+who_at_me = on_regex(r"谁.*(艾特|圈|[aA][tT])+.?我")
 
 
 @who_at_me.handle()
