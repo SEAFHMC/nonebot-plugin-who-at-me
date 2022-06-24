@@ -53,7 +53,7 @@ async def _(bot: Bot, event: GroupMessageEvent, message=EventMessage()):
         raise FinishedException
 
 
-who_at_me = on_regex(r"谁.*(艾特|圈|[aA][tT])+.?我")
+who_at_me = on_regex(r"谁.*(@|艾特|圈|[aA][tT])+.?我")
 
 
 @who_at_me.handle()
