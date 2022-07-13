@@ -121,8 +121,7 @@ clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear", "已�
 async def _(event: MessageEvent):
     if isinstance(event, GroupMessageEvent):
         MainTable.delete().where(
-            MainTable.target_id == event.user_id
-            and MainTable.group_id == event.group_id
+            (MainTable.target_id == event.user_id) & (MainTable.group_id == event.group_id)
         ).execute()
         await clear_db.finish("已经清除您在本群的被艾特记录！")
     else:
