@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-who-at-me"
-version = "0.2.3"
+version = "0.2.4"
 description = "Find who on earth has ated you"
 authors = ["SEAFHMC <soku_ritsuki@outlook.com>"]
 license = "MIT License"

@@ -10,8 +10,10 @@ from nonebot.adapters.onebot.v11 import (
     Bot,
 )
 from nonebot.exception import FinishedException, ActionFailed
-from nonebot.params import EventMessage
+from nonebot.adapters.onebot.v11.helpers import CHINESE_AGREE_WORD, CHINESE_DECLINE_WORD
+from nonebot.params import EventMessage, ArgPlainText, CommandArg
 from nonebot.permission import SUPERUSER
+from nonebot.matcher import Matcher
 from .data_source import extract_member_at
 from .database import MainTable
 from .rule import message_at_rule
@@ -121,7 +123,8 @@ clear_db = on_command("清除数据库", aliases={"clear_db", "db_clear", "已�
 async def _(event: MessageEvent):
     if isinstance(event, GroupMessageEvent):
         MainTable.delete().where(
-            (MainTable.target_id == event.user_id) & (MainTable.group_id == event.group_id)
+            (MainTable.target_id == event.user_id)
+            & (MainTable.group_id == event.group_id)
         ).execute()
         await clear_db.finish("已经清除您在本群的被艾特记录！")
     else:
@@ -135,6 +138,17 @@ clear_db_all = on_command(
 
 
 @clear_db_all.handle()
-async def _():
-    MainTable.delete().where(MainTable.target_id).execute()
-    await clear_db.finish("已清理全部数据库")
+async def handle_first_receive(matcher: Matcher, args: Message = CommandArg()):
+    plain_text = args.extract_plain_text()
+    if plain_text:
+        matcher.set_arg("confirm", args)
+
+
+@clear_db_all.got("confirm", prompt="该操作将清楚数据库全部内容，是否继续？")
+async def _(YesNo: str = ArgPlainText("confirm")):
+    if YesNo in CHINESE_AGREE_WORD:
+        MainTable.delete().where(MainTable.target_id).execute()
+        await clear_db.finish("已清理全部数据库")
+    elif YesNo in CHINESE_DECLINE_WORD:
+        await clear_db.finish("已取消操作")
+    await clear_db.reject("不太明白你的意思呢")
