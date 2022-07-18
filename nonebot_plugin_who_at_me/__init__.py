@@ -1,14 +1,10 @@
 import time
 from typing import List
-import nonebot
-from nonebot import on_command, on_message, on_regex
-from nonebot.adapters.onebot.v11 import (
-    GroupMessageEvent,
-    MessageSegment,
-    MessageEvent,
-    Message,
-    Bot,
-)
+from nonebot.log import logger
+from nonebot.plugin import on_command, on_message, on_regex, PluginMetadata
+from nonebot.adapters.onebot.v11.event import GroupMessageEvent, MessageEvent
+from nonebot.adapters.onebot.v11.message import Message, MessageSegment
+from nonebot.adapters.onebot.v11.bot import Bot
 from nonebot.exception import FinishedException, ActionFailed
 from nonebot.adapters.onebot.v11.helpers import CHINESE_AGREE_WORD, CHINESE_DECLINE_WORD
 from nonebot.params import EventMessage, ArgPlainText, CommandArg
@@ -18,8 +14,6 @@ from .data_source import extract_member_at
 from .database import MainTable
 from .rule import message_at_rule
 from .utils import node_custom, get_member_name
-
-from nonebot.plugin import PluginMetadata
 
 __plugin_meta__ = PluginMetadata(
     name="who_at_me",
@@ -109,7 +103,7 @@ async def _(bot: Bot, event: MessageEvent):
             )
         except ActionFailed as e:
             if "wording=API不存在" in (error := str(e)):
-                nonebot.logger.error(
+                logger.error(
                     f"发送合并转发失败，请确认您的协议端支持私聊合并转发！(如果使用go-cqhttp，请确保版本号不小于v1.0.0-rc2)\n{error}"
                 )
             else:
