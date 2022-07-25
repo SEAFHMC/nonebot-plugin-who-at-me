@@ -39,7 +39,7 @@ async def create_record(bot: Bot, event: GroupMessageEvent, target_id):
                     group_id=event.group_id, user_id=segment.data["qq"]
                 )
             )
-            message.append(f"@{card}")
+            message.append(f"@{MessageSegment.text(card)}")
             continue
         message.append(segment)
 
