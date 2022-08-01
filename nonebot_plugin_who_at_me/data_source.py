@@ -8,7 +8,7 @@ def extract_member_at(message: Message) -> Set[str]:
     参数:
         message: 消息对象
     返回:
-        被艾特列表
+        被艾特集合
     """
     return {
         segment.data["qq"]
