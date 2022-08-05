@@ -27,6 +27,7 @@ __plugin_meta__ = PluginMetadata(
     },
 )
 plugin_config = Config.parse_obj(get_driver().config)
+reminder_expire_time = plugin_config.reminder_expire_time or 86400
 
 monitor = on_message(block=False, rule=message_at_rule)
 
@@ -83,7 +84,7 @@ async def _(bot: Bot, event: MessageEvent):
         if is_group := isinstance(event, GroupMessageEvent):
             if res.group_id != event.group_id:
                 continue
-        if time.time() - int(res.time) <= plugin_config.reminder_expire_time * 86400:
+        if time.time() - int(res.time) <= reminder_expire_time:
             message_list.append(
                 node_custom(
                     content=res.message,
