@@ -10,10 +10,12 @@ from nonebot.adapters.onebot.v11.helpers import CHINESE_AGREE_WORD, CHINESE_DECL
 from nonebot.params import EventMessage, ArgPlainText, CommandArg
 from nonebot.permission import SUPERUSER
 from nonebot.matcher import Matcher
+from nonebot import get_driver
 from .data_source import extract_member_at
 from .database import MainTable
 from .rule import message_at_rule
 from .utils import node_custom, get_member_name
+from .config import Config
 
 __plugin_meta__ = PluginMetadata(
     name="who_at_me",
@@ -24,6 +26,7 @@ __plugin_meta__ = PluginMetadata(
         "version": "0.2.2",
     },
 )
+plugin_config = Config.parse_obj(get_driver().config)
 
 monitor = on_message(block=False, rule=message_at_rule)
 
@@ -80,26 +83,24 @@ async def _(bot: Bot, event: MessageEvent):
         if is_group := isinstance(event, GroupMessageEvent):
             if res.group_id != event.group_id:
                 continue
-        message_list.append(
-            node_custom(
-                content=res.message,
-                user_id=res.operator_id,
-                name=res.operator_name,
-                time=res.time,
+        if time.time() - int(res.time) <= plugin_config.reminder_expire_time * 86400:
+            message_list.append(
+                node_custom(
+                    content=res.message,
+                    user_id=res.operator_id,
+                    name=res.operator_name,
+                    time=res.time,
+                )
             )
-        )
-        message_list.append(res.message)
     if not message_list:
         await who_at_me.finish(MessageSegment.reply(event.message_id) + "目前还没有人@您噢！")
     if is_group:
         event: GroupMessageEvent
-        await bot.call_api(
-            "send_group_forward_msg", group_id=event.group_id, messages=message_list
-        )
+        await bot.send_group_forward_msg(group_id=event.group_id, messages=message_list)
     else:
         try:
-            await bot.call_api(
-                "send_private_forward_msg", user_id=event.user_id, messages=message_list
+            await bot.send_private_forward_msg(
+                user_id=event.user_id, messages=message_list
             )
         except ActionFailed as e:
             if "wording=API不存在" in (error := str(e)):
