@@ -27,7 +27,7 @@ __plugin_meta__ = PluginMetadata(
     },
 )
 plugin_config = Config.parse_obj(get_driver().config)
-reminder_expire_time = plugin_config.reminder_expire_time or 86400
+reminder_expire_time = plugin_config.reminder_expire_time * 24 * 3600 or 3 * 24 * 3600
 
 monitor = on_message(block=False, rule=message_at_rule)
 
