@@ -25,7 +25,10 @@ pip install nonebot-plugin-who-at-me
 nb plugin install nonebot-plugin-who-at-me
 ```
 # 配置
-记得配置SUPERUSER
+记得配置SUPERUSERS
+```shell
+reminder_expire_time 合并转发消息记录的超时时间, 单位为天
+```
 # 使用
 <div align="center">
 
