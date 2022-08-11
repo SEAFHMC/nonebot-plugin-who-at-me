@@ -23,11 +23,15 @@ __plugin_meta__ = PluginMetadata(
     usage="直接发送 谁@我了？",
     extra={
         "author": "SEAFHMC <soku_ritsuki@outlook.com>",
-        "version": "0.2.2",
+        "version": "0.2.7",
     },
 )
 plugin_config = Config.parse_obj(get_driver().config)
-reminder_expire_time = plugin_config.reminder_expire_time * 24 * 3600 or 3 * 24 * 3600
+reminder_expire_time = (
+    plugin_config.reminder_expire_time * 24 * 3600
+    if plugin_config.reminder_expire_time
+    else 3 * 24 * 3600
+)
 
 monitor = on_message(block=False, rule=message_at_rule)
 
