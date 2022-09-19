@@ -5,7 +5,7 @@ from nonebot.plugin import on_command, on_message, on_regex, PluginMetadata
 from nonebot.adapters.onebot.v11.event import GroupMessageEvent, MessageEvent
 from nonebot.adapters.onebot.v11.message import Message, MessageSegment
 from nonebot.adapters.onebot.v11.bot import Bot
-from nonebot.exception import FinishedException, ActionFailed
+from nonebot.exception import ActionFailed
 from nonebot.adapters.onebot.v11.helpers import CHINESE_AGREE_WORD, CHINESE_DECLINE_WORD
 from nonebot.params import EventMessage, ArgPlainText, CommandArg
 from nonebot.permission import SUPERUSER
@@ -67,11 +67,11 @@ async def _(bot: Bot, event: GroupMessageEvent, message=EventMessage()):
     if event.reply:
         target_id = event.reply.sender.user_id
         await create_record(bot=bot, event=event, target_id=target_id)
-        raise FinishedException
+        return
     if member_at := extract_member_at(message=message):
         for target_id in member_at:
             await create_record(bot=bot, event=event, target_id=target_id)
-        raise FinishedException
+        return
 
 
 who_at_me = on_regex(r"谁.*(@|艾特|圈|[aA][tT])+.?我")
