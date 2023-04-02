@@ -44,10 +44,14 @@ async def create_record(bot: Bot, event: GroupMessageEvent, target_id):
         if segment.type == "at":
             card = get_member_name(
                 await bot.get_group_member_info(
-                    group_id=event.group_id, user_id=segment.data["qq"]
+                    group_id=event.group_id, user_id=int(target_id)
                 )
             )
-            message.append(f"@{MessageSegment.text(card)}")
+            message.append(
+                f"@{MessageSegment.text(card)}"
+                if segment.data["qq"] != "all"
+                else "@全体成员"
+            )
             continue
         message.append(segment)
 
@@ -68,7 +72,14 @@ async def _(bot: Bot, event: GroupMessageEvent, message=EventMessage()):
         target_id = event.reply.sender.user_id
         await create_record(bot=bot, event=event, target_id=target_id)
         return
-    if member_at := extract_member_at(message=message):
+    member_at = [
+        target_id
+        for target_id in await extract_member_at(
+            event.group_id, message=message, bot=bot
+        )
+        if target_id != str(event.user_id)
+    ]
+    if member_at:
         for target_id in member_at:
             await create_record(bot=bot, event=event, target_id=target_id)
         return
