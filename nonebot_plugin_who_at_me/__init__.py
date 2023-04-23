@@ -70,7 +70,6 @@ async def create_record(bot: Bot, event: GroupMessageEvent, target_id):
 async def _(bot: Bot, event: GroupMessageEvent, message=EventMessage()):
     if event.reply:
         reply_qq = {segment.data["qq"] for segment in event.original_message["at"]}
-        reply_qq.remove(str(event.reply.sender.user_id))
         for target_id in reply_qq:
             await create_record(bot=bot, event=event, target_id=target_id)
         return
