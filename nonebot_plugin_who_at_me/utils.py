@@ -13,4 +13,4 @@ def node_custom(
 
 
 def get_member_name(member: Dict[str, Any]) -> "str":
-    return member["card"] if not len(member["card"]) == 0 else member["nickname"]
+    return (member["card"] or member["nickname"]) or ""
