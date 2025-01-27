@@ -10,7 +10,7 @@ from nonebot.adapters.onebot.v11.helpers import CHINESE_AGREE_WORD, CHINESE_DECL
 from nonebot.params import EventMessage, ArgPlainText, CommandArg
 from nonebot.permission import SUPERUSER
 from nonebot.matcher import Matcher
-from nonebot import get_driver
+from nonebot import get_driver, get_plugin_config
 from .data_source import extract_member_at
 from .database import MainTable
 from .rule import message_at_rule
@@ -26,7 +26,7 @@ __plugin_meta__ = PluginMetadata(
         "version": "0.3.1",
     },
 )
-plugin_config = Config.parse_obj(get_driver().config)
+plugin_config = get_plugin_config(Config)
 reminder_expire_time = (
     plugin_config.reminder_expire_time * 24 * 3600
     if plugin_config.reminder_expire_time
