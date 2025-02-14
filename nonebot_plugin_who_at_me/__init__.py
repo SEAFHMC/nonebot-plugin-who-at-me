@@ -93,7 +93,7 @@ who_at_me = on_regex(r"谁.*(@|艾特|圈|[aA][tT])+.?我")
 async def _(bot: Bot, event: MessageEvent):
     res_list: List[MainTable] = MainTable.select().where(
         MainTable.target_id == event.user_id
-    )
+    ).order_by(MainTable.time.desc())
     message_list: List[MessageSegment] = list()
     is_group = False
     for res in res_list:
