@@ -26,7 +26,7 @@ __plugin_meta__ = PluginMetadata(
         "version": "0.3.1",
     },
 )
-plugin_config = get_plugin_config(Config)
+plugin_config = Config.parse_obj(get_driver().config.dict())
 reminder_expire_time = (
     plugin_config.reminder_expire_time * 24 * 3600
     if plugin_config.reminder_expire_time
